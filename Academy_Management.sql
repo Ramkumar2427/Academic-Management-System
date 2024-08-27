@@ -1,0 +1,91 @@
+-- Academy Management
+
+
+CREATE TABLE StudentInfo (
+    STU_ID INT PRIMARY KEY,
+    STU_NAME VARCHAR(255),
+    DOB DATE,
+    PHONE_NO VARCHAR(15),
+    EMAIL_ID VARCHAR(255),
+    ADDRESS VARCHAR(255)
+);
+CREATE TABLE CoursesInfo (
+    COURSE_ID INT PRIMARY KEY,
+    COURSE_NAME VARCHAR(255),
+    COURSE_INSTRUCTOR_NAME VARCHAR(255)
+);
+
+CREATE TABLE EnrollmentInfo (
+    ENROLL_ID INT PRIMARY KEY,
+    STU_ID INT,
+    COURSE_ID INT,
+    ENROLL_STATUS VARCHAR(50),
+    FOREIGN KEY (STU_ID) REFERENCES StudentInfo(STU_ID),
+    FOREIGN KEY (COURSE_ID) REFERENCES CoursesInfo(COURSE_ID)
+);
+
+INSERT INTO StudentInfo (STU_ID, STU_NAME, DOB, PHONE_NO, EMAIL_ID, ADDRESS) 
+VALUES (2, 'John Cena', '1991-05-25', '223-456-7890', 'johncena@email.com', '4567 Elm St'),
+(3, 'Kali', '1992-06-10', '333-456-7890', 'kali@email.com', '6677 Elm St');
+
+Insert into CoursesInfo (COURSE_ID, COURSE_NAME, COURSE_INSTRUCTOR_NAME) values (223,'Mechanical Engg','Prof.Ram')
+,(224,'Csc Engg','Prof.Prem'),(225,'EEE Engg','Prof.Aravind')
+;
+
+
+
+Insert into EnrollmentInfo (ENROLL_ID,STU_ID,COURSE_ID,ENROLL_STATUS) values
+(4565,1,225,'Completed'),(4965,2,223,'WIP'),(7565,3,224,'Held')
+;
+
+SELECT STU_NAME, PHONE_NO, EMAIL_ID, ENROLL_STATUS 
+FROM StudentInfo 
+JOIN EnrollmentInfo ON StudentInfo.STU_ID = EnrollmentInfo.STU_ID;
+
+SELECT COURSE_NAME 
+FROM CoursesInfo 
+JOIN EnrollmentInfo ON CoursesInfo.COURSE_ID = EnrollmentInfo.COURSE_ID
+WHERE EnrollmentInfo.STU_ID = 3;
+
+SELECT COURSE_NAME, COURSE_INSTRUCTOR_NAME 
+FROM CoursesInfo;
+
+
+SELECT COURSE_NAME, COURSE_INSTRUCTOR_NAME 
+FROM CoursesInfo 
+WHERE COURSE_ID IN (223,224,225); 
+
+SELECT c.COURSE_NAME, COUNT(STU_ID) AS NumberOfStudents
+FROM EnrollmentInfo e
+JOIN CoursesInfo c ON e.COURSE_ID = c.COURSE_ID
+GROUP BY c.COURSE_NAME;
+
+SELECT STU_NAME 
+FROM StudentInfo s
+JOIN EnrollmentInfo e ON s.STU_ID = e.STU_ID
+WHERE e.COURSE_ID = 224;
+
+SELECT COURSE_INSTRUCTOR_NAME, COUNT(e.STU_ID) AS NumberOfStudents
+FROM CoursesInfo c
+JOIN EnrollmentInfo e ON c.COURSE_ID = e.COURSE_ID
+GROUP BY COURSE_INSTRUCTOR_NAME;
+
+SELECT STU_NAME, COUNT(e.COURSE_ID) AS NumberOfCourses
+FROM StudentInfo s
+JOIN EnrollmentInfo e ON s.STU_ID = e.STU_ID
+GROUP BY s.STU_NAME
+HAVING COUNT(e.COURSE_ID) > 1;
+
+SELECT COURSE_NAME, COUNT(e.STU_ID) AS NumberOfStudents
+FROM CoursesInfo c
+JOIN EnrollmentInfo e ON c.COURSE_ID = e.COURSE_ID
+GROUP BY COURSE_NAME
+ORDER BY COUNT(e.STU_ID) DESC;
+
+
+
+
+
+
+
+
